@@ -1,0 +1,24 @@
+From 080e8ade1eaf98fba1156a66f079d8e5dbdd02b3 Mon Sep 17 00:00:00 2001
+From: Brandon Maier <brandon.maier@gmail.com>
+Date: Fri, 17 Jan 2025 11:03:01 -0600
+Subject: [PATCH] Add conda hunspell_dictionaries to search path
+
+---
+ src/tools/hunspell.cxx | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/tools/hunspell.cxx b/src/tools/hunspell.cxx
+index 787f616..8aea20f 100644
+--- a/src/tools/hunspell.cxx
++++ b/src/tools/hunspell.cxx
+@@ -117,6 +117,7 @@
+ 
+ #define LIBDIR                \
+   DATADIR "/hunspell:"        \
++  DATADIR "/hunspell_dictionaries:" \
+   DATADIR "/myspell:"         \
+   DATADIR "/myspell/dicts:"   \
+   "/usr/share/hunspell:"      \
+-- 
+2.47.1
+

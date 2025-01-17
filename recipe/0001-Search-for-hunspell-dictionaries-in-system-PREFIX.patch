@@ -1,0 +1,52 @@
+From 3f45881be6a5d7e0fddb7704e52304e5c2eec4a3 Mon Sep 17 00:00:00 2001
+From: Brandon Maier <brandon.maier@gmail.com>
+Date: Fri, 17 Jan 2025 08:21:39 -0600
+Subject: [PATCH] Search for hunspell dictionaries in system $PREFIX
+
+When packaging hunspell for the Conda ecosystem, we must manually wrap
+the hunspell binary with a script that injects a custom DICPATH.
+
+This script is necessary because Conda builds hunspell at a custom
+$PREFIX. So all the system files are installed at $PREFIX/share/. But
+hunspell searches a list of fixed paths for dictionaries under
+/usr/share/.
+
+Automake $(datadir) stores the system's value for $PREFIX/usr/share, so
+we export that to the compilation and add alternate dictionary search
+paths using $(datadir).
+
+Fixes https://github.com/hunspell/hunspell/issues/1035
+---
+ src/tools/Makefile.am  | 2 +-
+ src/tools/hunspell.cxx | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/tools/Makefile.am b/src/tools/Makefile.am
+index 1786e8e..55dd3e6 100644
+--- a/src/tools/Makefile.am
++++ b/src/tools/Makefile.am
+@@ -1,6 +1,6 @@
+ bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
+ 
+-AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
++AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers  -DDATADIR=\"$(datadir)\"
+ 
+ hzip_SOURCES=hzip.cxx
+ hunzip_SOURCES=hunzip.cxx
+diff --git a/src/tools/hunspell.cxx b/src/tools/hunspell.cxx
+index 9d487c1..787f616 100644
+--- a/src/tools/hunspell.cxx
++++ b/src/tools/hunspell.cxx
+@@ -116,6 +116,9 @@
+ #include "../parsers/odfparser.hxx"
+ 
+ #define LIBDIR                \
++  DATADIR "/hunspell:"        \
++  DATADIR "/myspell:"         \
++  DATADIR "/myspell/dicts:"   \
+   "/usr/share/hunspell:"      \
+   "/usr/share/myspell:"       \
+   "/usr/share/myspell/dicts:" \
+-- 
+2.47.1
+

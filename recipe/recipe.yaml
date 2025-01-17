@@ -10,6 +10,9 @@ package:
 source:
   url:  https://github.com/hunspell/hunspell/releases/download/v${{ version }}/hunspell-${{ version }}.tar.gz
   sha256: 11ddfa39afe28c28539fe65fc4f1592d410c1e9b6dd7d8a91ca25d85e9ec65b8
+  patches:
+    - 0001-Search-for-hunspell-dictionaries-in-system-PREFIX.patch
+    - 0002-Add-conda-hunspell_dictionaries-to-search-path.patch
 
 build:
   number: 2
